@@ -1,16 +1,24 @@
-let boid;
+// Boids
+let boids = [];
+
+// Food
 let foods = [];
-let numFood = 2;
-let maxFood = 51
+let numFood = 400;
+let maxFood = 200;
+
+
+
 function setup() {
     createCanvas(windowWidth,windowHeight);
     // createCanvas(500,500);
 
-    boid = new Boid;
+    for(let i = 0; i <= 5; i++){
+        boids.push(new Boid());
+    }
 
 
     // generate food :
-    for(let i = 0; i < 20; i++){
+    for(let i = 0; i <= numFood; i++){
         foods.push(new Food());
     }
     frameRate(60)
@@ -21,19 +29,23 @@ function draw() {
     // FPS
     let fps = floor(frameRate());
     text(fps, 5, 10);
-
-
-    for(var i = 0; i < foods.length; i++){
-        foods[i].draw();
+    // boids
+    for(let i = 0; i < boids.length; i++){
+        boids[i].eat(foods);
+        boids[i].update();
     }
-    boid.eat(foods);
-    boid.update();
+    
+    
     // food:
+    
+        for(var i = 0; i < foods.length; i++){
+            foods[i].draw();
+        }
     if(foods.length <= numFood){
         foods.push(new Food())
     }
     // increase the number of foods
-    numFood+= 1
+    numFood+= 0.1
     numFood = min(numFood, maxFood) // constrain
 
 }

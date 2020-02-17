@@ -5,55 +5,62 @@ class Boid{
 
         this.position = createVector(this.x1, this.y1);
 
-        this.velocity = createVector(0,-2);
+        // this.velocity = createVector(0,-2);
+        this.velocity = createVector(random(-2,2),random(-2, 2));
         this.maxSpeed = 2
         this.acceleration = createVector(1,1);
         
         this.maxForce = 0.2
 
-        this.radius = 20;
-        this.size = this.radius;
-        this.maxSize = 50;
+        // Circle and size
+        this.size = 20;
+        this.maxSize = 100;
 
-
+        this.perception = this.size*5;
+        this.maxPerception = this.maxSize+this.size/1.5;
+        
+        this.toGetBigger = 0; 
+        
         this.applyForce = function(force){
-            this.acceleration.add(force)
+            this.acceleration.add(force);
         }
-
+        
     }
+    
     draw(){
-        circle(this.position.x, this.position.y, this.radius);
+        circle(this.position.x, this.position.y, this.size);
         
         // Detection circle :
         push();
         stroke(50,50,255,220);
         strokeWeight(3);
-        fill(0,0,0,0)
-        ellipse(this.position.x, this.position.y, 200)
+        fill(0,0,0,0);
+        ellipse(this.position.x, this.position.y, this.perception*2)
         pop();
-
+        
         
     }   
-
+    
     eat(foods){
         let record = Infinity;
         let closest = null;
         for(var i = 0; i < foods.length; i++){
             let distance = this.position.dist(foods[i].position);
-            if(distance < record && distance < 100){
+            if(distance < record && distance < this.perception){
                 record = distance;
                 closest = i;
             }
-
+            
         }
         if(closest != null){
+            // Closest capture circle
             push();
             stroke(50,150,105,220);
             strokeWeight(3);
             fill(0,0,0,0)
             ellipse(this.position.x, this.position.y, this.position.dist(foods[closest].position)*2)
             pop();
-
+            
             this.seek(foods[closest])
             push();
             stroke(0,255,55,200);
@@ -61,34 +68,36 @@ class Boid{
             line(this.position.x, this.position.y, foods[closest].position.x, foods[closest].position.y)
             pop();     
             // Ate :
-            if(this.position.dist(foods[closest].position) < 5){
+            if(this.position.dist(foods[closest].position) < this.size/2){
                 foods.splice(closest,1);
-                //this.size += 5
+                
+                // Get bigger +
+                this.toGetBigger += 10
             }
         }
-
+        
     }
-
+    
     seek(target){
         let desired = p5.Vector.sub(target.position, this.position);
         desired.setMag(this.maxSpeed);
-
+        
         let steer = p5.Vector.sub(desired, this.velocity);
         steer.limit(this.maxForce);
-
+        
         this.applyForce(steer)
         return steer;
-
+        
     }
-            
+    
     update(){
         
         // Off the view
-        if(this.position.x+2*this.radius <= 0) this.position.x = width+this.radius;
-        else if(this.position.x-this.radius >= width) this.position.x = -this.radius;
+        if(this.position.x+2*this.size <= 0) this.position.x = width+this.size;
+        else if(this.position.x-this.size >= width) this.position.x = -this.size;
         
-        if(this.position.y+2*this.radius <= 0) this.position.y = height+this.radius;
-        else if(this.position.y-this.radius >= height) this.position.y = -this.radius;
+        if(this.position.y+2*this.size <= 0) this.position.y = height+this.size;
+        else if(this.position.y-this.size >= height) this.position.y = -this.size;
         
         // Update
         this.velocity.add(this.acceleration);
@@ -97,14 +106,22 @@ class Boid{
         // Avancer
         this.position.add(this.velocity);
         this.acceleration.mult(0)
-
+        
         // Size controle
-
-        this.radius = min(this.size, this.maxSize)
+        
+        this.size = min(this.size, this.maxSize)
+        // Perception is proportional from size
+        this.perception = this.size*3;
+        this.perception = min(this.perception, this.maxPerception)
+        this.maxPerception = this.maxSize+this.size/1.5;
+        
+        // Get bigger
+        this.size+= this.toGetBigger/10
+        this.toGetBigger-=this.toGetBigger/10
         
         this.draw();
-
-
+        
+        
     }
             
 }
