@@ -12,7 +12,7 @@ function setup() {
     createCanvas(windowWidth,windowHeight);
     // createCanvas(500,500);
 
-    for(let i = 0; i <= 5; i++){
+    for(let i = 0; i < 5; i++){
         boids.push(new Boid());
     }
 
@@ -34,7 +34,19 @@ function draw() {
         boids[i].eat(foods);
         boids[i].update();
     }
-    
+    // OPTIONAL
+    for(let i = 0; i < boids.length; i++){
+        for(let j = 0; j < boids.length; j++){
+            let d = boids[i].position.dist(boids[j].position)
+            if(boids[i] != boids[j] && d < 500){
+                push();
+                stroke(0, 80, 205, 100)
+                strokeWeight(3)
+                line(boids[i].position.x, boids[i].position.y, boids[j].position.x, boids[j].position.y)
+                pop();
+            }
+        }
+    }
     
     // food:
     

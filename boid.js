@@ -7,16 +7,16 @@ class Boid{
 
         // this.velocity = createVector(0,-2);
         this.velocity = createVector(random(-2,2),random(-2, 2));
-        this.maxSpeed = 2
+        this.maxSpeed = 2;
         this.acceleration = createVector(1,1);
         
-        this.maxForce = 0.2
+        this.maxForce = 0.2;
 
         // Circle and size
         this.size = 20;
-        this.maxSize = 100;
+        this.maxSize = 250;
 
-        this.perception = this.size*5;
+        this.perception = this.size*3;
         this.maxPerception = this.maxSize+this.size/1.5;
         
         this.toGetBigger = 0; 
@@ -72,7 +72,7 @@ class Boid{
                 foods.splice(closest,1);
                 
                 // Get bigger +
-                this.toGetBigger += 10
+                this.toGetBigger += 1
             }
         }
         
@@ -107,17 +107,17 @@ class Boid{
         this.position.add(this.velocity);
         this.acceleration.mult(0)
         
-        // Size controle
+        // Size control
         
         this.size = min(this.size, this.maxSize)
         // Perception is proportional from size
-        this.perception = this.size*3;
+        this.perception = this.size*1.2;
         this.perception = min(this.perception, this.maxPerception)
         this.maxPerception = this.maxSize+this.size/1.5;
         
         // Get bigger
-        this.size+= this.toGetBigger/10
-        this.toGetBigger-=this.toGetBigger/10
+        this.size+= this.toGetBigger/50
+        this.toGetBigger-=this.toGetBigger/50
         
         this.draw();
         

@@ -14,5 +14,6 @@ class Food{
         // this.yoff += 0.001;
         // this.position.x = map(noise(this.xoff),0,1,0-40,width+50);
         // this.position.y = map(noise(this.yoff),0,1,0-40,height+50);
+        
     }
 }
